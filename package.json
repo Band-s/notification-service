@@ -1,0 +1,22 @@
+{
+  "name": "notification-service",
+  "version": "1.12.0",
+  "private": true,
+  "description": "Northwind Commerce notification service (Tier 1, internet-facing, PII).",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/server.ts",
+    "test": "node --import tsx --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "lodash": "4.17.20"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/lodash": "^4.17.0",
+    "@types/node": "^22.13.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0"
+  }
+}
