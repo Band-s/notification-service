@@ -9,12 +9,35 @@ export const notifyRouter = Router();
  * Called by the public sign-in page and by tenant integrations.
  */
 notifyRouter.post("/", (req, res) => {
-  const { name, email, bodyTemplate, templateVariable } = req.body ?? {};
+  const payload = req.body;
+  if (payload == null || typeof payload !== "object" || Array.isArray(payload)) {
+    res.status(400).json({ error: "name and email are required" });
+    return;
+  }
+  const record = payload as Record<string, unknown>;
+  const { name, email } = record;
   if (typeof name !== "string" || typeof email !== "string") {
     res.status(400).json({ error: "name and email are required" });
     return;
   }
-  const message = buildMagicLinkMessage({ name, bodyTemplate, templateVariable });
-  // Delivery is out of scope for the demo; return what would be sent (minus the token).
-  res.status(202).json({ to: email, subject: message.subject, body: message.body.replace(message.token, "<redacted>") });
+  const callerOptions = Object.prototype.hasOwnProperty.call(record, "imports")
+    ? { imports: record.imports }
+    : undefined;
+  try {
+    const message = buildMagicLinkMessage(
+      {
+        name,
+        bodyTemplate: record.bodyTemplate as string | undefined,
+        templateVariable: record.templateVariable as string | undefined,
+      },
+      callerOptions,
+    );
+    // Delivery is out of scope for the demo; return what would be sent (minus the token).
+    res.status(202).json({ to: email, subject: message.subject, body: message.body.replace(message.token, "<redacted>") });
+  } catch (err) {
+    if (!(err instanceof Error) || err.name !== "TemplateValidationError") {
+      throw err;
+    }
+    res.status(400).json({ error: "Invalid template options" });
+  }
 });
