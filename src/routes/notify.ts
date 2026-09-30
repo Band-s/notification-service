@@ -9,12 +9,28 @@ export const notifyRouter = Router();
  * Called by the public sign-in page and by tenant integrations.
  */
 notifyRouter.post("/", (req, res) => {
-  const { name, email, bodyTemplate, templateVariable } = req.body ?? {};
+  const body = (req.body ?? {}) as {
+    name?: unknown;
+    email?: unknown;
+    bodyTemplate?: unknown;
+    templateVariable?: unknown;
+    imports?: unknown;
+  };
+  const { name, email, bodyTemplate, templateVariable } = body;
   if (typeof name !== "string" || typeof email !== "string") {
     res.status(400).json({ error: "name and email are required" });
     return;
   }
-  const message = buildMagicLinkMessage({ name, bodyTemplate, templateVariable });
-  // Delivery is out of scope for the demo; return what would be sent (minus the token).
-  res.status(202).json({ to: email, subject: message.subject, body: message.body.replace(message.token, "<redacted>") });
+  try {
+    const message = buildMagicLinkMessage({
+      name,
+      bodyTemplate,
+      templateVariable,
+      ...(Object.hasOwn(body, "imports") ? { imports: body.imports } : {}),
+    });
+    // Delivery is out of scope for the demo; return what would be sent (minus the token).
+    res.status(202).json({ to: email, subject: message.subject, body: message.body.replace(message.token, "<redacted>") });
+  } catch {
+    res.status(400).json({ error: "invalid template" });
+  }
 });
