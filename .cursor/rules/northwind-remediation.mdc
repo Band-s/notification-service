@@ -1,0 +1,17 @@
+---
+description: Northwind remediation conventions for bug fixes and security fixes
+alwaysApply: true
+---
+
+<!-- Guidance for agents, not a security boundary. Enforcement lives in branch protection, APPROVAL_POLICY.md review routing and the VulnFleet policy re-check. -->
+
+# Remediation conventions
+
+- Make the smallest change that fixes the issue. No refactors, renames or formatting churn.
+- Add a regression test in a new file under `test/` and confirm it fails on the unfixed code before you fix it.
+- Never edit, skip or delete existing tests.
+- No major version upgrades of any dependency without human approval. Every dependency change ships with its `package-lock.json` change.
+- Do not change `package.json` scripts.
+- `src/auth/**` is protected: do not edit it without a named human approval on the issue or PR. Read it, propose the change, then stop. See `src/auth/APPROVAL_POLICY.md`.
+- Never log or return a sign-in token.
+- Follow the `northwind-safe-fix` skill for the step-by-step procedure.
