@@ -13,6 +13,7 @@ const DEFAULT_BODY = "Hi <%= ctx.name %>, sign in with this link: <%= ctx.link %
  * Builds a one-time sign-in ("magic link") message.
  * `templateVariable` lets white-label tenants name the data object their
  * templates reference (defaults to "ctx").
+ * Reviewers: this file is under src/auth/** (APPROVAL_POLICY.md).
  */
 export function buildMagicLinkMessage(input: {
   name: string;
