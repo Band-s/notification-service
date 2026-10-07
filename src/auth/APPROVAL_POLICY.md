@@ -23,7 +23,7 @@ internet-facing service that handles PII.
 | Role | GitHub login |
 |---|---|
 | Identity and auth owner (platform-team) | @Band-s |
-| Second reviewer, security | @REPLACE-WITH-SECOND-REVIEWER <!-- TODO before the demo: a real GitHub login with access to this repo --> |
+| Second reviewer, security | @shacharband |
 
 ## What reviewers check
 
